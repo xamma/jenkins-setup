@@ -65,16 +65,18 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       steps {
-        // Build docker image
-        sh 'docker build -t my-jenkins-docker .'
-        sh 'docker tag my-jenkins-docker:latest xamma/my-jenkins-docker:latest'
+          container('docker') {
+            // Build docker image
+            sh 'docker build -t my-jenkins-docker .'
+            sh 'docker tag my-jenkins-docker:latest xamma/my-jenkins-docker:latest'
 
-        // Push image to Container-Registry (Dockerhub)
-        withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh 'docker login -u $USERNAME -p $PASSWORD'  // use CR-login data from credentials
-            // sh 'docker login -u $USERNAME -p $PASSWORD ghcr.io'  // Container-Registry-Anmeldedaten aus dem Credential verwenden
-            sh 'docker push xamma/my-jenkins-docker:latest'  // push docker image to registry
-        }
+            // Push image to Container-Registry (Dockerhub)
+            withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh 'docker login -u $USERNAME -p $PASSWORD'  // use CR-login data from credentials
+                // sh 'docker login -u $USERNAME -p $PASSWORD ghcr.io'  // Container-Registry-Anmeldedaten aus dem Credential verwenden
+                sh 'docker push xamma/my-jenkins-docker:latest'  // push docker image to registry
+            }
+          }
       }
     }
 
