@@ -14,19 +14,24 @@ pipeline {
     }
 
     stage('Test') {
-      steps {
-        // install dependencies, switch to directory
-        dir('src') {
-            sh 'pip install -r requirements.txt'
-        }
-
-        // test code and fail pipeline if unsuccessful
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-            dir('src/main') {
-                sh 'pytest'
+        agent {
+            docker {
+                image 'python3.11-slim'
             }
         }
-      }
+        steps {
+            // install dependencies, switch to directory
+            dir('src') {
+                sh 'pip install -r requirements.txt'
+            }
+
+            // test code and fail pipeline if unsuccessful
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                dir('src/main') {
+                    sh 'pytest'
+                }
+            }
+        }
     }
 
     stage('Build and Push Docker Image') {
