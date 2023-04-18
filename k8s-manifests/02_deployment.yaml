@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicd-jenkins-depl
+  namespace: cicd-jenkins
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cicd-jenkins
+  template:
+    metadata:
+      labels:
+        app: cicd-jenkins
+    spec:
+      containers:
+      - name: cicd-container
+        image: xamma/my-jenkins-docker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: backend-port
+      restartPolicy: Always
