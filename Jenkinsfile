@@ -13,6 +13,12 @@ pipeline {
       }
     }
 
+    stage('Setup Jenkins') {
+        steps {
+            sh 'apt update && apt install -y python3'
+        }
+    }
+
     stage('Test') {
       steps {
         // install dependencies, switch to directory
