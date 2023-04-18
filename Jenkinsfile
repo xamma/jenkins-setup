@@ -64,6 +64,12 @@ pipeline {
     }
 
     stage('Build and Push Docker Image') {
+      // Only run when tests where successfull
+      when {
+        expression {
+          return currentBuild.result == 'SUCCESS'
+        }
+      }
       steps {
         // Build docker image
         sh 'docker build -t my-jenkins-docker .'
@@ -76,25 +82,19 @@ pipeline {
             sh 'docker push xamma/my-jenkins-docker:latest'  // push docker image to registry
         }
       }
-      // Only run when tests where successfull
+    }
+
+    stage('Deploy to Kubernetes') {
       when {
         expression {
           return currentBuild.result == 'SUCCESS'
         }
       }
-    }
-
-    stage('Deploy to Kubernetes') {
       steps {
         // apply k8s manifests to update application
         sh 'kubectl apply -f k8s-manifests/'
       }
       // Only run when tests where successfull
-      when {
-        expression {
-          return currentBuild.result == 'SUCCESS'
-        }
-      }
     }
   }
 }
