@@ -15,7 +15,7 @@ pipeline {
 
     stage('Setup Jenkins') {
         steps {
-            sh 'apt update && apt install -y python3'
+            sh 'sudo apt update && sudo apt install -y python3'
         }
     }
 
