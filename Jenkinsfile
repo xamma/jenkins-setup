@@ -64,12 +64,6 @@ pipeline {
     }
 
     stage('Build and Push Docker Image') {
-      // Only run when tests where successfull
-      when {
-        expression {
-          return currentBuild.result == 'SUCCESS'
-        }
-      }
       steps {
         // Build docker image
         sh 'docker build -t my-jenkins-docker .'
@@ -85,11 +79,11 @@ pipeline {
     }
 
     stage('Deploy to Kubernetes') {
-      when {
-        expression {
-          return currentBuild.result == 'SUCCESS'
-        }
-      }
+    //   when {
+    //     expression {
+    //       return currentBuild.result == 'SUCCESS'
+    //     }
+    //   }
       steps {
         // apply k8s manifests to update application
         sh 'kubectl apply -f k8s-manifests/'
