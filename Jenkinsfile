@@ -12,23 +12,31 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: docker
-            image: docker:dind
-            command:
-            - cat
-            tty: true
-            volumeMounts:
-             - mountPath: /var/run/docker.sock
-               name: docker-sock
           - name: python
             image: python:3.11
             command:
             - cat
             tty: true
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:latest
+            args: ["--dockerfile=Dockerfile", "--context=dir/with/dockerfile", "--destination=<your-dockerhub-username>/<your-dockerhub-repo>:<tag>"]
+            env:
+            - name: DOCKER_CONFIG
+              value: "/kaniko/.docker"
+            volumeMounts:
+            - mountPath: /kaniko/.docker
+              name: docker-config
+              readOnly: true
+            - mountPath: /kaniko/ssl/certs
+              name: kaniko-certs
+              readOnly: true
           volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock    
+          - name: docker-config
+            secret:
+              secretName: jenkins-docker-config
+          - name: kaniko-certs
+            secret:
+              secretName: kaniko-certs  
         '''
     }
   }
@@ -66,16 +74,10 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       steps {
-          container('docker') {
-            // Build docker image
-            sh 'docker build -t my-jenkins-docker .'
-            sh 'docker tag my-jenkins-docker:latest xamma/my-jenkins-docker:latest'
-
-            // Push image to Container-Registry (Dockerhub)
-            withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                sh 'docker login -u $USERNAME -p $PASSWORD'  // use CR-login data from credentials
-                // sh 'docker login -u $USERNAME -p $PASSWORD ghcr.io'  // Container-Registry-Anmeldedaten aus dem Credential verwenden
-                sh 'docker push xamma/my-jenkins-docker:latest'  // push docker image to registry
+          container('kaniko') {
+            // Build and Push image to Container-Registry (Dockerhub)
+            withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh 'echo $DOCKER_PASSWORD | /kaniko/executor --dockerfile=Dockerfile --context=. --destination=xamma/my-jenkins-docker:latest --dockerconfig $DOCKER_CONFIG'
             }
           }
       }
