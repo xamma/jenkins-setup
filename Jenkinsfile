@@ -18,25 +18,19 @@ pipeline {
             - cat
             tty: true
           - name: kaniko
-            image: gcr.io/kaniko-project/executor:latest
-            args: ["--dockerfile=Dockerfile", "--context=dir/with/dockerfile", "--destination=<your-dockerhub-username>/<your-dockerhub-repo>:<tag>"]
-            env:
-            - name: DOCKER_CONFIG
-              value: "/kaniko/.docker"
+            image: gcr.io/kaniko-project/executor:debug
+            command:
+            - cat
             volumeMounts:
-            - mountPath: /kaniko/.docker
-              name: docker-config
-              readOnly: true
-            - mountPath: /kaniko/ssl/certs
-              name: kaniko-certs
-              readOnly: true
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
           volumes:
-          - name: docker-config
+          - name: kanico-secret
             secret:
-              secretName: jenkins-docker-config
-          - name: kaniko-certs
-            secret:
-              secretName: kaniko-certs  
+              secretName: dockercred
+              items:
+                - key: .dockerconfigjson
+                  path: config.json
         '''
     }
   }
@@ -75,9 +69,7 @@ pipeline {
     stage('Build and Push Docker Image') {
       steps {
           container('kaniko') {
-            // Build and Push image to Container-Registry (Dockerhub)
-            withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-            sh 'echo $DOCKER_PASSWORD | /kaniko/executor --dockerfile=Dockerfile --context=. --destination=xamma/my-jenkins-docker:latest --dockerconfig $DOCKER_CONFIG'
+            sh '/kaniko/executor --context `pwd` --destination xamma/my-jenkins-docker:latest'
             }
           }
       }
@@ -93,7 +85,6 @@ pipeline {
         // apply k8s manifests to update application
         sh 'kubectl apply -f k8s-manifests/'
       }
-      // Only run when tests where successfull
     }
   }
 }

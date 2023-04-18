@@ -58,3 +58,7 @@ YOU NEED TO INSTALL THE KUBERNETES PLUGIN AND SET UP A NEW CLOUD TO USE IT!!!!
 ```Manage Jenkins > install plugins > kubernetes, git, pipeline etc```  
 ```Manage Jenkins > Manage nodes > Configure Clouds > Kubernetes```  
 Also configure the Jenkins URL and Jenkins tunnel to where the Jenkins Server runs and where the ClusterIP JLNP service runs.  
+
+Kubernetes removed Docker so you cant mount docker.sock anymore. Use Kaniko for building and pushing images..
+```kubectl create secret docker-registry dockercred --docker-server=https://index.docker.io/v1/ --docker-username
+=SECRET --docker-password=SECRET --docker-email=SECRET```
