@@ -19,6 +19,11 @@ pipeline {
             volumeMounts:
              - mountPath: /var/run/docker.sock
                name: docker-sock
+          - name: python
+            image: python:3.11
+            command:
+            - cat
+            tty: true
           volumes:
           - name: docker-sock
             hostPath:
@@ -42,7 +47,7 @@ pipeline {
     stage('Test') {
 
         steps {
-            container('docker') {
+            container('python') {
                 // install dependencies, switch to directory
                 dir('src') {
                     sh 'pip install -r requirements.txt'
