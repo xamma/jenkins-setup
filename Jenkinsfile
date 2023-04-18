@@ -1,9 +1,31 @@
 pipeline {
   agent {
-        docker { 
-                image 'python:3' 
-            }
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: maven:alpine
+            command:
+            - cat
+            tty: true
+          - name: docker
+            image: docker:latest
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+             - mountPath: /var/run/docker.sock
+               name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock    
+        '''
     }
+  }
 
   stages {
     stage('Checkout') {
@@ -20,15 +42,17 @@ pipeline {
     stage('Test') {
 
         steps {
-            // install dependencies, switch to directory
-            dir('src') {
-                sh 'pip install -r requirements.txt'
-            }
+            container('docker') {
+                // install dependencies, switch to directory
+                dir('src') {
+                    sh 'pip install -r requirements.txt'
+                }
 
-            // test code and fail pipeline if unsuccessful
-            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                dir('src/main') {
-                    sh 'pytest'
+                // test code and fail pipeline if unsuccessful
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    dir('src/main') {
+                        sh 'pytest'
+                    }
                 }
             }
         }

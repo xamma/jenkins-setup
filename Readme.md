@@ -54,4 +54,6 @@ Also you have to specify credentials e.g. by using the **Jenkins Credentials Plu
 Create a new multibranch pipeline and select the Repository URL as well as the Jenkinsfile location.  
 Take care of the notation of the manifests. I prefixed them to ensure they are created in the right order.  
 
-YOU NEED TO INSTALL THE DOCKER PLUGIN AND SET UP A NEW CLOUD TO USE IT!!!!
+YOU NEED TO INSTALL THE KUBERNETES PLUGIN AND SET UP A NEW CLOUD TO USE IT!!!!  
+```Manage Jenkins > install plugins > kubernetes, git, pipeline etc```  
+```Manage Jenkins > Manage nodes > Configure Clouds > Kubernetes```
