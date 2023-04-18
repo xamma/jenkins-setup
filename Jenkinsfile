@@ -13,7 +13,7 @@ pipeline {
             - cat
             tty: true
           - name: docker
-            image: docker:latest
+            image: docker:dind
             command:
             - cat
             tty: true
