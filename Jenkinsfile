@@ -1,6 +1,6 @@
 pipeline {
   agent {
-        docker { 
+        local-docker-cloud { 
                 image 'python:3' 
             }
     }
