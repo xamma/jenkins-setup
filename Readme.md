@@ -56,4 +56,5 @@ Take care of the notation of the manifests. I prefixed them to ensure they are c
 
 YOU NEED TO INSTALL THE KUBERNETES PLUGIN AND SET UP A NEW CLOUD TO USE IT!!!!  
 ```Manage Jenkins > install plugins > kubernetes, git, pipeline etc```  
-```Manage Jenkins > Manage nodes > Configure Clouds > Kubernetes```
+```Manage Jenkins > Manage nodes > Configure Clouds > Kubernetes```  
+Also configure the Jenkins URL and Jenkins tunnel to where the Jenkins Server runs and where the ClusterIP JLNP service runs.  

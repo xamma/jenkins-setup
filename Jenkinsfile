@@ -5,6 +5,7 @@ pipeline {
         apiVersion: v1
         kind: Pod
         spec:
+          serviceAccountName: jenkins-admin
           containers:
           - name: maven
             image: maven:alpine
