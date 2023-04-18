@@ -68,8 +68,6 @@ pipeline {
       steps {
           container('docker') {
             // Build docker image
-            sh 'sudo usermod -aG docker jenkins'
-            sh 'newgrp docker'
             sh 'docker build -t my-jenkins-docker .'
             sh 'docker tag my-jenkins-docker:latest xamma/my-jenkins-docker:latest'
 
