@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent {
+        docker { 
+                image 'python:3' 
+            }
+    }
 
   stages {
     stage('Checkout') {
@@ -14,11 +18,7 @@ pipeline {
     }
 
     stage('Test') {
-        agent {
-            docker {
-                image 'python:3.11-slim'
-            }
-        }
+
         steps {
             // install dependencies, switch to directory
             dir('src') {
