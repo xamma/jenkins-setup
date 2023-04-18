@@ -21,11 +21,12 @@ pipeline {
             image: gcr.io/kaniko-project/executor:debug
             command:
             - cat
+            tty: true
             volumeMounts:
-            - name: kaniko-secret
-              mountPath: /kaniko/.docker
+              - name: kaniko-secret
+                mountPath: /kaniko/.docker
           volumes:
-          - name: kanico-secret
+          - name: kaniko-secret
             secret:
               secretName: dockercred
               items:

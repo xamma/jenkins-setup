@@ -61,4 +61,4 @@ Also configure the Jenkins URL and Jenkins tunnel to where the Jenkins Server ru
 
 Kubernetes removed Docker so you cant mount docker.sock anymore. Use Kaniko for building and pushing images..
 ```kubectl create secret docker-registry dockercred --docker-server=https://index.docker.io/v1/ --docker-username
-=SECRET --docker-password=SECRET --docker-email=SECRET```
+=SECRET --docker-password=SECRET --docker-email=SECRET -n devops-tools```
