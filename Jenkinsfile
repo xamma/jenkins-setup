@@ -13,10 +13,12 @@ pipeline {
             - cat
             tty: true
           - name: docker
-            image: docker:20.10.3-dind
+            image: docker:latest
             command:
             - cat
             tty: true
+            securityContext:
+              privileged: true
             volumeMounts:
              - mountPath: /var/run/docker.sock
                name: docker-sock
