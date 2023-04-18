@@ -71,8 +71,7 @@ pipeline {
           container('kaniko') {
             sh '/kaniko/executor --context `pwd` --destination xamma/my-jenkins-docker:latest'
             }
-          }
-      }
+        }
     }
 
     stage('Deploy to Kubernetes') {
