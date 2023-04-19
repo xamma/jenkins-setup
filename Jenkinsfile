@@ -44,6 +44,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
+        echo 'Checking out code Repository.'
         // Checkout repository
         checkout([
           $class: 'GitSCM',
@@ -56,6 +57,7 @@ pipeline {
     stage('Test') {
 
         steps {
+            echo 'Testing code integration.'
             container('python') {
                 // install dependencies, switch to directory
                 dir('src') {
@@ -74,6 +76,7 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       steps {
+          echo 'Building docker image and pushing to Dockerhub.'
           container('kaniko') {
             sh '/kaniko/executor --context `pwd` --destination xamma/my-jenkins-docker:latest'
             }
@@ -81,13 +84,9 @@ pipeline {
     }
 
     stage('Deploy to Kubernetes') {
-    //   when {
-    //     expression {
-    //       return currentBuild.result == 'SUCCESS'
-    //     }
-    //   }
       steps {
-        // apply k8s manifests to update application
+          echo 'Deploying to Kubernetes.'
+          // apply k8s manifests to update application
           container('kubectl') {
             sh 'kubectl apply -f k8s-manifests/'
         }
