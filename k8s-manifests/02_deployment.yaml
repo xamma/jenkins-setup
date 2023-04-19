@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cicd-jenkins-depl
-  namespace: cicd-jenkins
+  namespace: devops-tools
 spec:
   replicas: 3
   selector:
