@@ -18,7 +18,7 @@ pipeline {
             - cat
             tty: true
           - name: kubectl
-            image: bitnami/kubectl:latest
+            image: google/cloud-sdk:latest
             command:
             - cat
             tty: true
@@ -88,11 +88,8 @@ pipeline {
     //   }
       steps {
         // apply k8s manifests to update application
-        withCredentials([string(credentialsId: 'b4441623-5862-4632-8870-9e29c8722340', variable: 'KUBECONFIG')]) {
           container('kubectl') {
-            sh 'echo "$KUBECONFIG" > kubeconfig.yaml'
-            sh 'kubectl apply -f k8s-manifests/ --kubeconfig=kubeconfig.yaml'
-            }
+            sh 'kubectl apply -f k8s-manifests/'
         }
       }
     }

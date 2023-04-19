@@ -49,7 +49,14 @@ pipeline {
 ***To do the specified steps in the actual Jenkinsfile you have to install the required Plugins on the Jenkins-Server.***  
 Also you have to specify credentials e.g. by using the **Jenkins Credentials Plugin**.  
 ```Dashboard > Manage Jenkins > Credentials > System > Global Credentials```  
-Here you can add e.g. the Kubeconfig as secret text.  
+Here you can add e.g. the Kubeconfig as secret text or username and passwords to use withCredentials in your pipeline.  
+```
+withCredentials([usernamePassword(credentialsId: '27d39497-23a4-46cc-8f08-15c07f078563', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh 'docker login -u $USERNAME -p $PASSWORD'  // use CR-login data from credentials
+            // sh 'docker login -u $USERNAME -p $PASSWORD ghcr.io'  // Container-Registry-Anmeldedaten aus dem Credential verwenden
+            sh 'docker push xamma/my-jenkins-docker:latest'  // push docker image to registry
+        }
+```  
 
 ## Create the pipeline on the Jenkins server
 Create a new multibranch pipeline and select the Repository URL as well as the Jenkinsfile location.  
