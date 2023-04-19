@@ -17,6 +17,11 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+            - cat
+            tty: true
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             command:
@@ -83,7 +88,9 @@ pipeline {
     //   }
       steps {
         // apply k8s manifests to update application
-        sh 'kubectl apply -f k8s-manifests/'
+          container('kubectl') {
+            sh 'kubectl apply -f k8s-manifests/'
+        }
       }
     }
   }
