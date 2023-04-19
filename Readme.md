@@ -48,7 +48,8 @@ pipeline {
 
 ***To do the specified steps in the actual Jenkinsfile you have to install the required Plugins on the Jenkins-Server.***  
 Also you have to specify credentials e.g. by using the **Jenkins Credentials Plugin**.  
-```Dashboard > Manage Jenkins > Credentials > System > Global Credentials```
+```Dashboard > Manage Jenkins > Credentials > System > Global Credentials```  
+Here you can add e.g. the Kubeconfig as secret text.  
 
 ## Create the pipeline on the Jenkins server
 Create a new multibranch pipeline and select the Repository URL as well as the Jenkinsfile location.  

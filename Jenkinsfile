@@ -88,8 +88,11 @@ pipeline {
     //   }
       steps {
         // apply k8s manifests to update application
+        withCredentials([string(credentialsId: 'b4441623-5862-4632-8870-9e29c8722340', variable: 'KUBECONFIG')]) {
           container('kubectl') {
-            sh 'kubectl apply -f k8s-manifests/'
+            sh 'echo "$KUBECONFIG" > kubeconfig.yaml'
+            sh 'kubectl apply -f k8s-manifests/ --kubeconfig=kubeconfig.yaml'
+            }
         }
       }
     }
