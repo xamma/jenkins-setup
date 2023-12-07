@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: awx-ingress
+  namespace: awx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: jenkins.k8sdev.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: jenkins-service
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - jenkins.k8sdev.local
+    secretName: nginx-tls-secret

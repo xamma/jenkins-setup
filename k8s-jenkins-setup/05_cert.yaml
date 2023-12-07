@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-cert
+  namespace: devops-tools
+spec:
+  secretName: nginx-tls-secret
+  issuerRef:
+    name: nginx-clusterissuer
+    kind: ClusterIssuer
+  dnsNames:
+    - jenkins.k8sdev.local
